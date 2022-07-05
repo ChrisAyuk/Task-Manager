@@ -17,7 +17,7 @@
 	  
 		<nav id="menu">
 			<ul>
-				<li class="menuitem"><a href="index.php">Daily Task Planner</a></li>
+				<li class="menuitem"><a href="index.php"><img src = "pictures/iwomi-smaller.png" ></a></li>
 				<li class="menuitem"><a href="about.php">About Us</a></li>
 				<li class="menuitem"><a href="contact.php">Contact Us</a></li>
 				<li>
@@ -34,9 +34,9 @@
 			<nav id="leftmenu">
 				<a href = "dashboard.php"><h3>Dashboard</h3></a>
 				<ul>
-					<li><a href="manageUser.php">Manage User</a></li>
-					<li><a href="manageteams.php">Teams</a></li>
-					<li><a href="view.php">Manage task</a></li>	 
+					<a href="manageUser.php"><li>Manage User</li></a>
+					<a href="manageteams.php"><li>Teams</li></a>
+					<a href="view.php"><li>Manage task</li></a>	 
 				</ul>
 			</nav>
 		</aside>  
@@ -47,36 +47,41 @@
 		
 			<h1>User Records</h1>
 		 	
-			<table border= "1"> 
+			<table> 
 				<tr>
 				<thead>
-					<th>User ID</th>
+					<th>Intern ID</th>
 					<th>User Name</th>
-					<th>User Email</th>
-					<th>User Password</th>
-					<th>User Status</th>
-					<th>User Type</th>
+					<th>Email</th>
+					<th>Password</th>
+					<th>Team</th>
 					<th>Action</th>
 				</thead>
 				</tr>
 			
 			
 			<?php
-		 
-			$query="SELECT * FROM user";
-			$result=mysqli_query($con, $query);
-			
-			mysqli_close($con);
+		 	$id = $_SESSION['login_id'];
+			$query="SELECT * FROM intern as t1 INNER JOIN supervision as t2 ON t1.intern_id = t2.intern_id Where super_id= '$id'";
+			$result=mysqli_query($con, $query);		
 			
 			while($row = mysqli_fetch_array($result)){
+				$tid=$row['team_id'];
+				$tque="SELECT teamName from team as t1 inner join intern as t2 on t1.team_id=t2.team_id where t1.team_id='$tid'";
+				$tres=mysqli_query($con, $tque);
+				if(!$tres){
+					printf("Error: %s\n",mysqli_error($con));
+					exit();
+				}
+				$tfet=mysqli_fetch_array($tres);
+				
 				echo "<tr>
-						<td>",$row['user_id'],"</td>
+						<td>",$row['intern_id'],"</td>
 						<td>",$row['username'],"</td>
-						<td>",$row['user_email'],"</td>
-						<td>",$row['user_password'],"</td>
-						<td>",$row['user_status'],"</td>
-						<td>",$row['user_type'],"</td>
-						<td><a href ='updateUser.php? epr=update&id=",$row['user_id'],"'>Edit</a></td> 
+						<td>",$row['int_email'],"</td>
+						<td>",$row['int_pass'],"</td>
+						<td>",$tfet['teamName']?? null,"</td>
+						<td><a href ='updateUser.php? epr=update&id=",$row['intern_id'],"' class='button'>Edit</a>	<div class='delete'>Delete</div></td> 
 					</tr>";
 				
 			}
@@ -92,8 +97,8 @@
 			
 		</section>
 		
-	</div><!--container end-->
+	</div><!--container end -->
 	<div style="clear;both"></div>
 </body>
-<!--<h1>Welcome  <?php echo $login_session; ?></h1>-->
+<!--<h1> <?php echo $login_session; ?></h1>-->
 </html>
