@@ -14,7 +14,7 @@
 	  
 		<nav id="menu">
 			<ul>
-				<li class="menuitem"><a href="index.php">Daily Task Planner</a></li>
+				<li class="menuitem"><a href="index.php"><img src = "pictures/iwomi-smaller.png" ></a></li>
 				<li class="menuitem"><a href="about.php">About Us</a></li>
 				<li class="menuitem"><a href="contact.php">Contact Us</a></li>
 				<li>
@@ -32,8 +32,8 @@
 			<h3>Dashboard</h3>
 				<ul>
 					<li><a href="manageUser.php">Manage User</a></li>
-					 
-					 
+					<a href="manageteams.php"><li>Teams</li></a>
+					<a href="view.php"><li>Manage task</li></a>
 				</ul>
 			</nav>
 		</aside>  
@@ -44,13 +44,15 @@
 			<?php 
 				 
 				$id = $_GET['id'];
-				$row = mysqli_query($con, "SELECT * FROM user where user_id = '$id'");
+				$row = mysqli_query($con, "SELECT * FROM intern where intern_id = '$id'");
 				$st_row =mysqli_fetch_array($row);
-				 
+
+				$tid=$_SESSION['login_user'];
+				$trow = mysqli_query($con, "SELECT * from team where supervisor='$tid'");
 			?>
 			
 			<form method = "post" action = "pupdateUser.php">
-				 <input type = "hidden" name = "id" value = "<?php echo $st_row['user_id'] ?>"> 
+				 <input type = "hidden" name = "id" value = "<?php echo $st_row['intern_id'] ?>" readonly> 
 				
 				
 				<p>
@@ -59,39 +61,37 @@
 				</p>
 				<p>
 					<label>User Email:
-						<input type = "email" name = "userEmail"  value ="<?php echo $st_row['user_email'] ?>" required/></label>
+						<input type = "email" name = "userEmail"  value ="<?php echo $st_row['int_email'] ?>" required/></label>
 				</p>
 				<p>
 					<label>User Password:
-						<input type = "password" name = "userPass"  value ="<?php echo $st_row['user_password'] ?>" required/></label>
+						<input type = "password" name = "userPass"  value ="<?php echo $st_row['int_pass'] ?>" required/></label>
 				</p>
+
 				<p>
-					<label>User Status:
-						<select name = "status">
-							<option value ="active">Active</option>
-							<option value ="inactive">Inactive</option></label>
+					<label>Team:
+						<select name="team" >
+							<?php 
+								while($t_row =mysqli_fetch_array($trow)){
+									echo"<option value=",$t_row['team_id'],">",$t_row['teamName'],"</option>";
+								}
+							?>
 						</select>
+						<!-- <input type = "text" name = "team"  value ="" readonly required/></label> -->
+				</p>
+				
 				</p>
 				<p>
-					<label>User Type:
-						<select name = "type">
-							<option value ="1">User</option>
-							<option value ="2">Admin</option></label>
-						</select>
-				</p>
-				<p>
-					<input type = "submit" value = "Update User" name = "btnupdateUser"/>
-					<input type = "reset" value = "Clear"/>
+					<input type = "submit" value = "Update User" name = "btnupdateUser" class="append"/>
+					<input type = "reset" value = "Clear" class="delete"/>
 				
 				</p>
 			
 			</form>	
 		</section>
-	</div><!--container end-->
+	</div><!--container end -->
 	<div style="clear;both"></div>
-	<footer>
-		Copyright &copy; 2016, Daily Task Planner
-	</footer>
+	
 </body>
 
 </html>
