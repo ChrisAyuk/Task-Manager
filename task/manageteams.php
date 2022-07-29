@@ -4,10 +4,10 @@
   $con = mysqli_connect('localhost','root','');
    
   mysqli_select_db($con, 'task');
-  $userid = $_SESSION['login_user']; 
+  $supervisor = $_SESSION['login_user']; 
   
-  $sql = "SELECT * FROM team where supervisor='$userid'";
-  $sql2 = mysqli_query($con, "SELECT * FROM team as t1 INNER JOIN supervisor as t2 ON t1.supervisor = t2.username WHERE username = '$userid'");
+  $sql = "SELECT * FROM team where supervisor='$supervisor'";
+  $sql2 = mysqli_query($con, "SELECT * FROM team as t1 INNER JOIN supervisor as t2 ON t1.supervisor = t2.username WHERE username = '$supervisor'");
 
   $info = mysqli_query($con, $sql);
 
@@ -16,8 +16,10 @@
   $new= "SELECT * from intern as tb1 inner join supervision as tb2
 	on tb1.intern_id = tb2.intern_id where tb2.super_id='".$_SESSION['login_id']."'";
   $newmem = mysqli_query($con, $new) or die( mysqli_error($con));
-  
-  //$fetch = mysqli_fetch_array($newmem);
+
+  $team= "SELECT * from intern as tb1 inner join supervision as tb2
+	on tb1.intern_id = tb2.intern_id where tb2.super_id='".$_SESSION['login_id']."'";
+  $newteam = mysqli_query($con, $team) or die( mysqli_error($con));
   
   $que= "SELECT distinct username from intern as tab1 inner join grouping as tab2
 	on tab1.team_id = tab2.team_id where tab1.team_id='".$irow['team_id']."'";
@@ -72,19 +74,17 @@
 						<th>Option</th>
 					</thead>
 				</tr>
-				<tr>
 				<?php
 					while($row= mysqli_fetch_array($info))
 					{
-					//echo "<tr>";
+					echo "<tr>";
 					echo "<td>".$row['teamName']."</td>";
 					echo "<td>".$row['capacity']."</td>";
 					echo "<td>".$row['supervisor']."</td>";
 					echo "<td><div class='button'>View</div>	<div class='delete'>Remove</div></td>";
-					//echo "</tr>";
+					echo "</tr>";
 					}
 				?>
-				<tr>
 			</table>
 		</section>
 
@@ -98,7 +98,7 @@
 						<h3>Capacity:</h3><h2><?php echo $irow['capacity'] ?></h2>
 						<br>
 						<img src="pictures/user.png" alt="#" width="80px" height="80px">
-						<h1><?php echo $userid ?></h1>
+						<h1><?php echo $supervisor ?></h1>
 					</div>
 					<div class="icon">
 						<h1>Members:</h1>
@@ -156,7 +156,7 @@
 			<p >New Team</p>
 		</div>
 		<div id="fltab" > 
-			<form method="POST">
+			<form method="post" action="pcreateteam.php">
 				<h2>Create a Team</h2>
 				<p>
 					<label><h1>Team Name:</h1> <input type="text" name="nteam" maxlength="20" required/>
@@ -165,19 +165,20 @@
 					<label><h1>Members:</h1> 
 						<ul>
 						<?php
-							//echo "<script>alert('".$fetch['username']."')</script>";
-							while($fetch=mysqli_fetch_array($newmem)){
-								echo "<li><input type='checkbox' name='nteam' value='".$fetch['username']."' maxlength='20' required/>&nbsp;".$mrow['username']."</li>";
-								echo "<script>alert('The loop is suppose to load!')</script>";
-								echo "<li><input type='checkbox' name='nteam' value='".$fetch['username']."' maxlength='20' required/>&nbsp;",$mrow['username'],"</li>";
-								echo "<script>alert(".$fetch['username'].");</script>";
+							$t = 0;
+							while($fetch=mysqli_fetch_array($newteam)){
+								echo "<li class='member'><input type='checkbox' name='member".$t."' value='".$fetch['intern_id']."' maxlength='20' />&nbsp;".$fetch['username']."</li>";
+								$t++;
+								// echo "<script>alert('The loop is suppose to have loaded!')</script>";	//Use this to check if the array values have laoded
+								// echo "<script>alert('".$fetch['username']."');</script>";	// Use this to check is the values loaded
 							}
 						?>
 						</ul>
 				</p>
+				<br><br>
+				<input type="submit" value="Create Team" name="newteam" onclick="disappear(this)"/>
+				<input type= "reset"/>
 			</form>
-			<br><br>
-			<input type="button" value="Create Team" onclick="disappear(this)"/>
 		</div>
 		<script type="text/javascript">
 			function appear(ev){
@@ -200,29 +201,6 @@
 	<div style="clear;both"></div>
 </body>
 
-		<?php
-			/* function newmember(){
-				$member = $_POST['member'];
-				$asql="UPDATE intern set team_id = '".$irow['team_id']."' where username = '$member'";
-				mysqli_query($con, $asql);
-				$nmem = mysqli_fetch_array($newmem);
-				$gsql = "INSERT into grouping(super_id, intern_id) values ('".$irow['team_id']."', '".$nmem['intern_id']."')";
-				mysqli_query($con, $gsql);
-				echo "<script>alert('New member added!')</script>";
-			} */
-		?>
-
 <!--<h1>Welcome  <?php //echo $login_session; ?></h1>-->
 </html>
-
-<?php
-/* function write_to_console($data) {
- $console = $data;
- if (is_array($console))
- $console = implode(',', $console);
-
- echo "<script>console.log('Console: " . $console . "' );</script>";
-}
-write_to_console($_SESSION['login_id']);
-write_to_console([1,2,3]); */
 ?>

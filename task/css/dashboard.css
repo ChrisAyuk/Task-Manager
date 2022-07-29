@@ -461,7 +461,7 @@ section{
 }
 
 #newtm:hover{
-	background-image: linear-gradient(rgba(0, 0, 0, 05) 0 0);
+	background-image: linear-gradient(rgba(0, 0, 0, .2) 0 0);
 	cursor: pointer;
 }
 
@@ -560,7 +560,7 @@ footer{
 
 
 
-input[type=button]{
+input[type=button], input[type=submit]{
     background-color: #54782E;
     border: none;
     color: white;
@@ -571,7 +571,7 @@ input[type=button]{
     cursor: pointer;
 	border-radius: 3px;
 }
-input[type=button]:hover{
+input[type=button]:hover, input[type=submit]:hover{
 	background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
 	cursor: pointer;
 }

@@ -35,8 +35,6 @@
 			<h2>Sign in</h2>
 			<form class = "form" method = "post" action = "psignin.php">
 				
-				<!--<input type = "hidden" name = "redirect" value = "main.php">-->
-				
 				<p><label>Email address:</label>
 					<input type = "email" name = "email"  placeholder = "name@domain.com" required/></p>
 				
