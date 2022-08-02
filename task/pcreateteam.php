@@ -33,8 +33,6 @@ include("manageteams.php");
 		else{continue;}
 	}
 	echo "<script>alert('New team created');window.location.href = 'manageteams.php';</script>";
-		
-
 	
 	mysqli_close($con);
 ?>
